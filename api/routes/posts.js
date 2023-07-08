@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 router.post("/post", isAuthenticated, async (req, res) => {
   const { content } = req.body;
 
+
   if (!content) {
     return res.status(400).json({ message: "投稿内容を入力してください。" });
   }
@@ -19,7 +20,11 @@ router.post("/post", isAuthenticated, async (req, res) => {
         authorId: req.userId,
       },
       include: {
-        author: true,
+        author: {
+          include: {
+            profile: true,
+          },
+        },
       },
     });
     res.status(201).json(newPost);
@@ -36,7 +41,11 @@ router.get("/get_latest_post", async (req, res) => {
       take: 10,
       orderBy: { createdAt: "desc" },
       include: {
-        author: true,
+        author: {
+          include: {
+            profile: true,
+          },
+        },
       },
     });
     return res.json(latestPosts);
