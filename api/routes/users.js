@@ -10,20 +10,20 @@ router.get("/find", isAuthenticated, async (req, res) => {
     if (!user) {
       res.status(404).json({ error: "ユーザーが見つかりませんでした。" });
     }
+
     res.status(200).json({
       user: { id: user.id, email: user.email, username: user.username },
     });
   } catch (err) {
-    res.status(500).json({ err: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-router.get("/profile/:userId", async (req, res) => {
-  const { userId } = req.params;
-
+router.get("/profile/:id", async (req, res) => {
+  const { id } = req.params;
   try {
     const profile = await prisma.profile.findUnique({
-      where: { userId: parseInt(userId) },
+      where: { userId: parseInt(id) },
       include: {
         user: {
           include: {
