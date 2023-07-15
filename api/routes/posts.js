@@ -8,7 +8,6 @@ const prisma = new PrismaClient();
 router.post("/post", isAuthenticated, async (req, res) => {
   const { content } = req.body;
 
-
   if (!content) {
     return res.status(400).json({ message: "投稿内容を入力してください。" });
   }
@@ -48,7 +47,29 @@ router.get("/get_latest_post", async (req, res) => {
         },
       },
     });
-    return res.json(latestPosts);
+    return res.status(200).json(latestPosts);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "サーバーエラーです。" });
+  }
+});
+
+//プロフィールページに該当ユーザの投稿内容だけを取得
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const userPosts = await prisma.post.findMany({
+      where: {
+        authorId: parseInt(id),
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        author: true,
+      },
+    });
+    return res.status(200).json(userPosts);
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "サーバーエラーです。" });

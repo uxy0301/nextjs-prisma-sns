@@ -1,38 +1,37 @@
-'use client'
-import React, { useState, useEffect } from 'react'
-import { Post } from './Post'
-import apiClient from '@/lib/apiClient';
-import { PostType } from '@/types';
+"use client";
+import React, { useState, useEffect } from "react";
+import { Post } from "./Post";
+import apiClient from "@/lib/apiClient";
+import { PostType } from "@/types";
 
 export const Timeline = () => {
-
-  const [postText,setPostText] = useState<string>("");
+  const [postText, setPostText] = useState<string>("");
   const [latestPosts, setLatestPost] = useState<PostType[]>([]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try{
+    try {
       const newPost = await apiClient.post("/posts/post", {
         content: postText,
       });
       setLatestPost((prevPosts) => [newPost.data, ...prevPosts]);
       setPostText("");
-    }catch(err){
+    } catch (err) {
       alert("ログインしてください。");
     }
   };
 
   useEffect(() => {
     const fetchLatestPosts = async () => {
-      try{
+      try {
         const response = await apiClient.get("/posts/get_latest_post");
         setLatestPost(response.data);
-      }catch(err){
+      } catch (err) {
         console.log(err);
       }
     };
     fetchLatestPosts();
-  }, [])
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -42,7 +41,9 @@ export const Timeline = () => {
             <textarea
               className="w-full h-24 p-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="What's on your mind?"
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPostText(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setPostText(e.target.value)
+              }
             ></textarea>
             <button
               type="submit"
@@ -53,9 +54,9 @@ export const Timeline = () => {
           </form>
         </div>
         {latestPosts.map((post: PostType) => (
-          <Post key={post.id} post={post}/>
+          <Post key={post.id} post={post} />
         ))}
       </main>
     </div>
-  )
-}
+  );
+};
