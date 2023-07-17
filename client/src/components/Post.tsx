@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PostType } from "@/types";
 import React from "react";
+import Image from "next/image";
 
 type Props = {
   post: PostType;
@@ -14,10 +15,12 @@ export const Post = (props: Props) => {
       <div className="mb-4">
         <div className="flex items-center mb-2">
           <Link href={`profile/${post.authorId}`}>
-            <img
+            <Image
               src={post.author.profile.profileImageUrl}
               className="w-10 h-10 rounded-full mr-2"
               alt="User Avatar"
+              width={40}
+              height={40}
             />
           </Link>
           <div>
